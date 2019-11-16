@@ -39,7 +39,6 @@ RUN set -ex \
 		libsqlite3-dev \
 		libssl-dev \
 		make \
-		systemtap-sdt-dev \
 		tk-dev \
 		wget \
 		xz-utils \
@@ -69,7 +68,6 @@ RUN set -ex \
 		--with-system-ffi \
 		--without-ensurepip \
 		--with-pydebug \
-		--with-dtrace \
 	&& make -j "$(nproc)" \
 # setting PROFILE_TASK makes "--enable-optimizations" reasonable: https://bugs.python.org/issue36044 / https://github.com/docker-library/python/issues/160#issuecomment-509426916
 		PROFILE_TASK='-m test.regrtest --pgo \
@@ -122,6 +120,8 @@ RUN set -ex \
 	&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
 	&& rm -rf /var/lib/apt/lists/* \
 	\
+	&& mkdir -p /usr/share/gdb/auto-load/usr/local/bin/ \
+	&& cp /usr/src/python/python-gdb.py /usr/share/gdb/auto-load/usr/local/bin/python3.6-gdb.py \
 	&& find /usr/local -depth \
 		\( \
 			\( -type d -a \( -name test -o -name tests -o -name idle_test \) \) \
